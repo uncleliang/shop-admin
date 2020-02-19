@@ -40,7 +40,7 @@ public class ImageService {
             }
         }
         if(!checkResult){ //格式错误报错
-            return new ResultBean(ConsUtil.RES_CODE_ERROR, ConsUtil.E_1001_FORMAT_ERROR);
+            return new ResultBean(ConsUtil.RES_CODE_ERROR, ConsUtil.E_FORMAT_ERROR);
         }
         fileName = System.currentTimeMillis()+fileName;
         try {
@@ -49,7 +49,7 @@ public class ImageService {
             file.transferTo(new File(finalPath));
         } catch (IOException e) {
             e.printStackTrace();
-            return new ResultBean(ConsUtil.RES_CODE_ERROR, ConsUtil.E_1002_UPLOAD_ERROR);
+            return new ResultBean(ConsUtil.RES_CODE_ERROR, ConsUtil.E_UPLOAD_ERROR);
         }
 
         ResultBean resultBean = new ResultBean();

@@ -7,6 +7,7 @@ import com.niit.shopadmin.service.ICategoryService;
 import com.niit.shopadmin.service.IProductService;
 import com.niit.shopadmin.service.impl.ImageService;
 import com.niit.shopadmin.util.ConsUtil;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -51,6 +52,7 @@ public class ProductController {
      * @return
      */
     @RequestMapping("/list")
+    @RequiresPermissions("product:view")
     public String list(){
         return "product/list";
     }
@@ -62,6 +64,7 @@ public class ProductController {
      */
     @RequestMapping("/findAll")
     @ResponseBody
+    @RequiresPermissions("product:view")
     public Map<String, Object> findAll(@RequestParam("pageNumber") Integer pageNumber, @RequestParam("pageSize")Integer pageSize){
 
         // JPA实现分页
@@ -83,6 +86,7 @@ public class ProductController {
     }
 
     @RequestMapping("/delete/{id}")
+    @RequiresPermissions("product:delete")
     public String deleteById(@PathVariable("id") Integer id){
 
         productService.deleteById(id);
@@ -91,6 +95,7 @@ public class ProductController {
     }
 
     @RequestMapping("/goUpdate/{id}")
+    @RequiresPermissions("product:update")
     public String goUpdate(@PathVariable("id") Integer id,ModelMap map){
         // 查询全部的一级分类
         map.put("categories",categoryService.findAll());
@@ -105,6 +110,7 @@ public class ProductController {
 
     @PostMapping("/imageUpload")
     @ResponseBody
+    @RequiresPermissions("product:update")
     public ResultBean imageUpload(@RequestParam("file")MultipartFile file){
 
         return imageService.upload(file);
@@ -119,6 +125,7 @@ public class ProductController {
     }
 
     @GetMapping("/goAdd")
+    @RequiresPermissions("product:add")
     public String add(ModelMap map){
         // 查询全部的一级分类
         map.put("categories",categoryService.findAll());
@@ -128,6 +135,7 @@ public class ProductController {
         return "product/add";
     }
     @PostMapping("/add")
+    @RequiresPermissions("product:add")
     public String add(Product product){
 
         productService.add(product);

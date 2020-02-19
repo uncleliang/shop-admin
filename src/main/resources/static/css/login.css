@@ -1,0 +1,13 @@
+
+
+.login-form{
+    width: 500px;
+    margin: 0 auto;
+    position: relative;
+    top: 200px;
+    text-align: center;
+}
+
+.login-form .message{
+    min-height: 20px;
+}
