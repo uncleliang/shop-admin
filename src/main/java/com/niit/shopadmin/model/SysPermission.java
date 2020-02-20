@@ -16,6 +16,41 @@ public class SysPermission {
     private String name;
     private String path;
     private String desc;
+    private String permission;
+    private Integer type;
+    private Integer parentId;
+
+    @Id
+    @Column(name = "permission")
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    @Id
+    @Column(name = "type")
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Id
+    @Column(name = "parent_id")
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+
 
     @Id
     @Column(name = "id")

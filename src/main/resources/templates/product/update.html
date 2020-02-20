@@ -10,43 +10,9 @@
     <link th:href="@{/css/bootstrap-table.css}" rel="stylesheet"/>
 </head>
 <body>
-<nav class="navbar navbar-default" role="navigation">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse"
-                data-target="#example-navbar-collapse">
-            <span class="sr-only"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href="#">管理系统</a>
-    </div>
-    <div class="collapse navbar-collapse" id="example-navbar-collapse">
-        <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">商品列表</a></li>
-                    <li><a href="/product/goAdd">添加商品</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品分类管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">商品分类列表</a></li>
-                    <li><a href="#">添加商品分类</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品二级分类管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">商品二级分类列表</a></li>
-                    <li><a href="#">添加商品二级分类</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
+<!--引入menu模版-->
+<nav th:replace="common/menu::nav"></nav>
+
 <form class="form-horizontal" action="/product/update" method="post">
     <div class="form-group">
         <input type="hidden" name="pid" th:value="${product.pid}">

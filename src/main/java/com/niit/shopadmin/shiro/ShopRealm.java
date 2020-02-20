@@ -36,6 +36,7 @@ public class ShopRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
 
+        // 当前登陆用户的用户名
         String username = (String) principalCollection.getPrimaryPrincipal();
 
         // 查询当前用户的全部权限
@@ -47,7 +48,7 @@ public class ShopRealm extends AuthorizingRealm {
 
         // 添加权限列表
         for(SysPermission sp : user.getSysRole().getPermissions()){
-            simpleAuthorizationInfo.addStringPermission(sp.getPath());
+            simpleAuthorizationInfo.addStringPermission(sp.getPermission());
         }
 
         return simpleAuthorizationInfo;

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
@@ -8,45 +9,21 @@
     <title>列表界面-前端</title>
     <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
     <link th:href="@{/css/bootstrap-table.css}" rel="stylesheet"/>
+    <script>
+        var hasUpdatePermission=false;
+        var hasDeletePermission=false;
+    </script>
 </head>
 <body>
-        <nav class="navbar navbar-default" role="navigation">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse"
-                            data-target="#example-navbar-collapse">
-                        <span class="sr-only"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">管理系统</a>
-                </div>
-                <div class="collapse navbar-collapse" id="example-navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品管理 <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">商品列表</a></li>
-                                <li><a href="/product/goAdd">添加商品</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品分类管理 <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">商品分类列表</a></li>
-                                <li><a href="#">添加商品分类</a></li>
-                            </ul>
-                        </li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品二级分类管理 <b class="caret"></b></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">商品二级分类列表</a></li>
-                                <li><a href="#">添加商品二级分类</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-        </nav>
+    <shiro:hasPermission name="product:update">
+        <script>hasUpdatePermission=true;</script>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="product:delete">
+        <script>hasDeletePermission=true;</script>
+    </shiro:hasPermission>
+    <!--引入menu模版-->
+    <nav th:replace="common/menu::nav"></nav>
+
     <div class="container">
         <table id="proTable"> </table>
     </div>
@@ -114,8 +91,12 @@
                     title:'操      作',
                     formatter:function (value, item, index) {
                         var str="";
-                        str+="<a class='btn btn-xs btn-success' href='/product/goUpdate/"+value+"'>编辑</a>";
-                        str+="<a class='btn btn-xs btn-danger' href='/product/delete/"+value+"'>删除</a>";
+                        if(hasUpdatePermission){
+                            str+="<a class='btn btn-xs btn-success' href='/product/goUpdate/"+value+"'>编辑</a>";
+                        }
+                        if(hasDeletePermission){
+                            str+="<a shiro:hasPermission='product:delete' class='btn btn-xs btn-danger' href='/product/delete/"+value+"'>删除</a>";
+                        }
                         return str;
                     }
                 }

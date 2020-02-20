@@ -52,4 +52,9 @@ public class SysController {
 
         return "product/list";
     }
+
+//    @RequestMapping("/error")
+//    public String error(){
+//        return "sys/error";
+//    }
 }

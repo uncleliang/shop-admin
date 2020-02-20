@@ -83,6 +83,16 @@ public class SysUser {
 
     private SysRole sysRole;//角色
 
+    @OneToOne
+    @JoinColumn(name = "role_id", referencedColumnName = "id")
+    public SysRole getSysRole() {
+        return sysRole;
+    }
+
+    public void setSysRole(SysRole sysRole) {
+        this.sysRole = sysRole;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,13 +112,5 @@ public class SysUser {
         return Objects.hash(id, username, password, trueName, phone, roleId);
     }
 
-    @OneToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "id")
-    public SysRole getSysRole() {
-        return sysRole;
-    }
 
-    public void setSysRole(SysRole sysRole) {
-        this.sysRole = sysRole;
-    }
 }
