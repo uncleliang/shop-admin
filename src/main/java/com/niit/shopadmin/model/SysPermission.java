@@ -21,38 +21,6 @@ public class SysPermission {
     private Integer parentId;
 
     @Id
-    @Column(name = "permission")
-    public String getPermission() {
-        return permission;
-    }
-
-    public void setPermission(String permission) {
-        this.permission = permission;
-    }
-
-    @Id
-    @Column(name = "type")
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
-    }
-
-    @Id
-    @Column(name = "parent_id")
-    public Integer getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Integer parentId) {
-        this.parentId = parentId;
-    }
-
-
-
-    @Id
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -90,6 +58,35 @@ public class SysPermission {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+    @Basic
+    @Column(name = "permission")
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    @Basic
+    @Column(name = "type")
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    @Basic
+    @Column(name = "parent_id")
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
     }
 
     @Override

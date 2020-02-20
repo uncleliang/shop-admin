@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta content="email=no" name="format-detection">
+    <title>系统管理</title>
+    <link href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.11.1/bootstrap-table.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/jquery-treegrid/0.2.0/css/jquery.treegrid.min.css">
+</head>
+
+<body>
+<div class="container">
+    <h1>树形表格 ： Table Treegrid</h1>
+    <table id="table"></table>
+    <br/>
+    <button onclick="test()">选择</button>
+</div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.0/extensions/treegrid/bootstrap-table-treegrid.js"></script>
+<script src="https://cdn.bootcss.com/jquery-treegrid/0.2.0/js/jquery.treegrid.min.js"></script>
+<script type="text/javascript">
+    var $table = $('#table');
+    var tableData =[];
+    var tableTotal=0;
+    // JSON.parse(
+    //     '[{"id":1,"name":"商品管理","path":"#","desc":"主菜单","permission":"product:menu:main","type":1,"parentId":0},' +
+    //     '{"id":2,"name":"商品列表","path":"/product/list","desc":"列表菜单","permission":"product:menu:list","type":1,"parentId":1},' +
+    //     '{"id":3,"name":"添加商品","path":"/product/goAdd","desc":"列表菜单","permission":"product:menu:add","type":1,"parentId":1},' +
+    //     '{"id":4,"name":"商品添加","path":null,"desc":"添加商品权限","permission":"product:add","type":2,"parentId":1},' +
+    //     '{"id":5,"name":"商品删除","path":"","desc":null,"permission":"product:delete","type":2,"parentId":1},' +
+    //     '{"id":6,"name":"商品更新","path":"","desc":null,"permission":"product:update","type":2,"parentId":1},' +
+    //     '{"id":7,"name":"商品查看","path":"","desc":null,"permission":"product:view","type":2,"parentId":1},' +
+    //     '{"id":15,"name":"用户添加","path":"","desc":"添加商品权限","permission":"user:add","type":2,"parentId":1},' +
+    //     '{"id":16,"name":"用户删除","path":" ","desc":null,"permission":"user:delete","type":2,"parentId":1},' +
+    //     '{"id":17,"name":"用户更新","path":null,"desc":null,"permission":"user:update","type":2,"parentId":1}]');
+    // var data = JSON.parse(
+    //     '[{"id":1,"parentId":0,"status":1,"name":"用户管理","permissionValue":"open:user:manage"},' +
+    //     '{"id":2,"parentId":0,"status":1,"name":"系统管理","permissionValue":"open:system:manage"},' +
+    //     '{"id":3,"parentId":1,"status":1,"name":"新增用户","permissionValue":"open:user:add"},' +
+    //     '{"id":4,"parentId":1,"status":1,"name":"修改用户","permissionValue":"open:user:edit"},' +
+    //     '{"id":5,"parentId":1,"status":0,"name":"删除用户","permissionValue":"open:user:del"},' +
+    //     '{"id":6,"parentId":2,"status":1,"name":"系统配置管理","permissionValue":"open:systemconfig:manage"},' +
+    //     '{"id":7,"parentId":6,"status":1,"name":"新增配置","permissionValue":"open:systemconfig:add"},' +
+    //     '{"id":8,"parentId":6,"status":1,"name":"修改配置","permissionValue":"open:systemconfig:edit"},' +
+    //     '{"id":9,"parentId":6,"status":0,"name":"删除配置","permissionValue":"open:systemconfig:del"},' +
+    //     '{"id":10,"parentId":2,"status":1,"name":"系统日志管理","permissionValue":"open:log:manage"},' +
+    //     '{"id":11,"parentId":10,"status":1,"name":"新增日志","permissionValue":"open:log:add"},' +
+    //     '{"id":12,"parentId":10,"status":1,"name":"修改日志","permissionValue":"open:log:edit"},' +
+    //     '{"id":13,"parentId":10,"status":0,"name":"删除日志","permissionValue":"open:log:del"}]');
+
+    $(function() {
+
+        //控制台输出一下数
+        $.ajax({
+            url:'/permission/findAll',
+            dataType:'json',
+            success:function(res){
+                tableData = res.rows;
+                tableTotal = res.total;
+                $table.bootstrapTable({
+                    // url:'/permission/findAll',
+                    data:tableData,
+                    idField: 'id',
+                    pageNumber : 1, //初始化加载第一页
+                    pagination : true,//是否分页
+                    sidePagination : 'client',//server:服务器端分页|client：前端分页
+                    pageSize : 10,//单页记录数
+                    pageList : [ 5, 10, 20],//可选择单页记录数
+                    columns:[
+                        {
+                            field: 'id',
+                            title: '编号'
+                        },
+                        {
+                            field:'name',
+                            title:'名称'
+                        },
+                        {
+                            field:'permission',
+                            title:'权限'
+                        },{
+                            field:'desc',
+                            title:'描述'
+                        },{
+                            field:'path',
+                            title:'路径'
+                        },
+                        {
+                            field:'type',
+                            title:'类型',
+                            formatter:function (value, item, index) {
+                                var res="";
+                                if(value==1){
+                                    res="<button class='btn btn-xs btn-success'>菜单</button>";
+                                }else if(value==2){
+                                    res="<button class='btn btn-xs btn-primary'>权限</button>";
+                                }
+                                return res;
+                            }
+                        },
+                        {
+                            field:'id',
+                            title:'操      作',
+                            formatter:function (value, item, index) {
+                                var str="";
+                                // if(hasUpdatePermission){
+                                //     str+=" <a class='btn btn-xs btn-success' href='/permission/goUpdate/"+value+"'>编辑</a> ";
+                                // }
+                                // if(hasDeletePermission){
+                                //     str+=" <a  class='btn btn-xs btn-danger' href='/permission/delete/"+value+"'>删除</a>";
+                                // }
+                                return str;
+                            }
+                        },
+                    ],
+                    responseHandler:function(res){
+                        var result ={
+                            total:tableTotal
+                        }
+                        return result;
+                    },
+                    // bootstrap-table-treegrid.js 插件配置 -- start
+
+                    //在哪一列展开树形
+                    treeShowField: 'name',
+                    //指定父id列
+                    parentIdField: 'parentId',
+
+                    onResetView: function(data) {
+                        //console.log('load');
+                        $table.treegrid({
+                            initialState: 'collapsed',// 所有节点都折叠
+                            // initialState: 'expanded',// 所有节点都展开，默认展开
+                            treeColumn: 1,
+                            // expanderExpandedClass: 'glyphicon glyphicon-minus',  //图标样式
+                            // expanderCollapsedClass: 'glyphicon glyphicon-plus',
+                            onChange: function() {
+                                $table.bootstrapTable('resetWidth');
+                            }
+                        });
+
+                        //只展开树形的第一级节点
+                        $table.treegrid('getRootNodes').treegrid('expand');
+
+                    },
+                    onCheck:function(row){
+                        var datas = $table.bootstrapTable('getData');
+                        // 勾选子类
+                        selectChilds(datas,row,"id","pid",true);
+
+                        // 勾选父类
+                        selectParentChecked(datas,row,"id","pid")
+
+                        // 刷新数据
+                        $table.bootstrapTable('load', datas);
+                    },
+
+                    onUncheck:function(row){
+                        var datas = $table.bootstrapTable('getData');
+                        selectChilds(datas,row,"id","pid",false);
+                        $table.bootstrapTable('load', datas);
+                    },
+                    // bootstrap-table-treetreegrid.js 插件配置 -- end
+                });
+            }
+        })
+
+    });
+
+    // 格式化按钮
+    function operateFormatter(value, row, index) {
+        return [
+            '<button type="button" class="RoleOfadd btn-small  btn-primary" style="margin-right:15px;"><i class="fa fa-plus" ></i>&nbsp;新增</button>',
+            '<button type="button" class="RoleOfedit btn-small   btn-primary" style="margin-right:15px;"><i class="fa fa-pencil-square-o" ></i>&nbsp;修改</button>',
+            '<button type="button" class="RoleOfdelete btn-small   btn-primary" style="margin-right:15px;"><i class="fa fa-trash-o" ></i>&nbsp;删除</button>'
+        ].join('');
+
+    }
+    // 格式化类型
+    function typeFormatter(value, row, index) {
+        if (value === 'menu') {  return '菜单';  }
+        if (value === 'button') {  return '按钮'; }
+        if (value === 'api') {  return '接口'; }
+        return '-';
+    }
+    // 格式化状态
+    function statusFormatter(value, row, index) {
+        if (value === 1) {
+            return '<span class="label label-success">正常</span>';
+        } else {
+            return '<span class="label label-default">锁定</span>';
+        }
+    }
+
+    //初始化操作按钮的方法
+    window.operateEvents = {
+        'click .RoleOfadd': function (e, value, row, index) {
+            add(row.id);
+        },
+        'click .RoleOfdelete': function (e, value, row, index) {
+            del(row.id);
+        },
+        'click .RoleOfedit': function (e, value, row, index) {
+            update(row.id);
+        }
+    };
+</script>
+<script>
+    /**
+     * 选中父项时，同时选中子项
+     * @param datas 所有的数据
+     * @param row 当前数据
+     * @param id id 字段名
+     * @param pid 父id字段名
+     */
+    function selectChilds(datas,row,id,pid,checked) {
+        for(var i in datas){
+            if(datas[i][pid] == row[id]){
+                datas[i].check=checked;
+                selectChilds(datas,datas[i],id,pid,checked);
+            };
+        }
+    }
+
+    function selectParentChecked(datas,row,id,pid){
+        for(var i in datas){
+            if(datas[i][id] == row[pid]){
+                datas[i].check=true;
+                selectParentChecked(datas,datas[i],id,pid);
+            };
+        }
+    }
+
+    function test() {
+        var selRows = $table.bootstrapTable("getSelections");
+        if(selRows.length == 0){
+            alert("请至少选择一行");
+            return;
+        }
+
+        var postData = "";
+        $.each(selRows,function(i) {
+            postData +=  this.id;
+            if (i < selRows.length - 1) {
+                postData += "， ";
+            }
+        });
+        alert("你选中行的 id 为："+postData);
+
+    }
+
+    function add(id) {
+        alert("add 方法 , id = " + id);
+    }
+    function del(id) {
+        alert("del 方法 , id = " + id);
+    }
+    function update(id) {
+        alert("update 方法 , id = " + id);
+    }
+
+
+</script>
+</html>

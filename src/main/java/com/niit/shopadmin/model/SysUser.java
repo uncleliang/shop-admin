@@ -18,6 +18,7 @@ public class SysUser {
     private String trueName;
     private String phone;
     private Integer roleId;
+    private Integer state;
 
     @Id
     @Column(name = "id")
@@ -69,6 +70,15 @@ public class SysUser {
         this.phone = phone;
     }
 
+    @Basic
+    @Column(name = "state")
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
 //    @Basic
 //    @Column(name = "role_id")
 //    public Integer getRoleId() {
