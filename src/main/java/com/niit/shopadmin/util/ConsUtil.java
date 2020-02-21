@@ -8,6 +8,7 @@ package com.niit.shopadmin.util;
  **/
 public class ConsUtil {
 
+    public static final int TOP_NODE=0;
     public static final int RES_CODE_SUCCES=0;
     public static final int RES_CODE_ERROR=-1;
     public static final String E_FORMAT_ERROR="只允许上传png,jpg,jpeg,gif格式的文件";

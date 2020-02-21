@@ -1,5 +1,9 @@
 package com.niit.shopadmin.model;
 
+
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import javax.persistence.GenerationType;
 import javax.persistence.*;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +22,7 @@ public class SysRole {
     private String desc;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -28,7 +33,7 @@ public class SysRole {
     }
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "[name]")
     public String getName() {
         return name;
     }
@@ -38,7 +43,7 @@ public class SysRole {
     }
 
     @Basic
-    @Column(name = "desc")
+    @Column(name = "[desc]")
     public String getDesc() {
         return desc;
     }
@@ -48,6 +53,7 @@ public class SysRole {
     }
 
     @OneToMany
+    @Cascade({CascadeType.SAVE_UPDATE})
     @JoinTable(name="sys_role_permission",joinColumns={@JoinColumn(name="role_id")}
             ,inverseJoinColumns={@JoinColumn(name="permission_id")})
     public List<SysPermission> getPermissions() {

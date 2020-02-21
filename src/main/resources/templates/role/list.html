@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+                xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta charset="UTF-8"/>
+    <title>角色列表界面-前端</title>
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/bootstrap-table.css}" rel="stylesheet"/>
+    <script>
+        var hasUpdatePermission=false;
+        var hasDeletePermission=false;
+    </script>
+</head>
+<body>
+    <shiro:hasPermission name="role:update">
+        <script>hasUpdatePermission=true;</script>
+    </shiro:hasPermission>
+    <shiro:hasPermission name="role:delete">
+        <script>hasDeletePermission=true;</script>
+    </shiro:hasPermission>
+    <!--引入menu模版-->
+    <nav th:replace="common/menu::nav"></nav>
+
+    <div class="container">
+        <table id="roleTable"> </table>
+    </div>
+
+<script th:src="@{/js/jquery-1.11.3.min.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/bootstrap-table.js}"></script>
+<script th:src="@{/js/bootstrap-table-zh-CN.js}"></script>
+<script>
+    $(function () {
+        $("#roleTable").bootstrapTable({
+            url:'/role/findAll', //ajax方式去调用controller方法获取数据
+            method:'get',
+            dataType: 'json',
+            striped : true, //是否显示行间隔色
+            pageNumber : 1, //初始化加载第一页
+            pagination : true,//是否分页
+            sidePagination : 'server',//server:服务器端分页|client：前端分页
+            pageSize : 5,//单页记录数
+            pageList : [ 5, 10, 20],//可选择单页记录数
+            showRefresh : true,//刷新按钮
+            queryParams : function(params) {//上传服务器的参数
+                var temp = {
+                    pageNumber :this.pageNumber,// SQL语句起始索引
+                    pageSize : this.pageSize,  // 每页显示数量
+                };
+                return temp;
+            },
+            columns:[
+                {
+                    field:'id',
+                    title:'编号'
+                },
+                {
+                    field:'name',
+                    title:'用户名'
+                },
+                {
+                    field:'desc',
+                    title:'描述'
+                },
+                {
+                    field:'id',
+                    title:'操      作',
+                    formatter:function (value, item, index) {
+                        var str="";
+                        // if(hasUpdatePermission){
+                        //     str+=" <a class='btn btn-xs btn-success' href='/role/goUpdate/"+value+"'>编辑</a> ";
+                        // }
+                        str+=" <a class='btn btn-xs btn-success' href='/role/goUpdate/"+value+"'>编辑</a> ";
+                        if(hasDeletePermission){
+                            str+=" <a  class='btn btn-xs btn-danger' href='/role/delete/"+value+"'>删除</a>";
+                        }
+                        return str;
+                    }
+                }
+            ]
+        })
+    })
+</script>
+</body>
+</html>

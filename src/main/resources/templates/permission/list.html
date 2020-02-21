@@ -26,6 +26,7 @@
     <nav th:replace="/common/menu::nav"></nav>
 
     <div class="container">
+        <a  class="btn btn-success" href="/permission/goAdd">添加权限</a>
         <table id="proTable"> </table>
     </div>
 
@@ -42,121 +43,129 @@
     var tableTotal=0;
 
     $(function() {
+        $table.bootstrapTable({
+            url: '/permission/findAll',
+            idField: 'id',
+            pageNumber: 1, //初始化加载第一页
+            pagination: true,//是否分页
+            sidePagination: 'server',//server:服务器端分页|client：前端分页
+            pageSize: 10,//单页记录数
+            pageList: [5, 10, 20],//可选择单页记录数
+            columns: [
+                {
+                    field: 'id',
+                    title: '编号'
+                },
+                {
+                    field: 'name',
+                    title: '名称'
+                },
+                {
+                    field: 'permission',
+                    title: '权限'
+                }, {
+                    field: 'desc',
+                    title: '描述'
+                }, {
+                    field: 'path',
+                    title: '路径'
+                },
+                {
+                    field: 'type',
+                    title: '类型',
+                    formatter: function (value, item, index) {
+                        var res = "";
+                        if (value == 1) {
+                            res = "<button class='btn btn-xs btn-success'>菜单</button>";
+                        } else if (value == 2) {
+                            res = "<button class='btn btn-xs btn-primary'>权限</button>";
+                        }
+                        return res;
+                    }
+                },
+                {
+                    field: 'id',
+                    title: '操      作',
+                    formatter: function (value, item, index) {
+                        var str = "";
+                        if (hasUpdatePermission) {
+                            str += " <a class='btn btn-xs btn-success' href='/permission/goUpdate/" + value + "'>编辑</a> ";
+                        }
+                        if (hasDeletePermission) {
+                            str += " <a  class='btn btn-xs btn-danger' href='/permission/delete/" + value + "'>删除</a>";
+                        }
+                        return str;
+                    }
+                },
+            ],
+            queryParams: function (params) {
+                var data ={
+                pageNumber: this.pageNumber,
+                pageSize:this.pageSize
+                }
+                return data;
+             },
+            // responseHandler:function(res){
+            //     var result ={
+            //         rows : res.rows,
+            //         total : res.total
+            //     }
+            //     return result;
+            // },
+            // bootstrap-table-treegrid.js 插件配置 -- start
+
+            //在哪一列展开树形
+            treeShowField: 'name',
+            //指定父id列
+            parentIdField: 'parentId',
+
+            onResetView: function(data) {
+                //console.log('load');
+                $table.treegrid({
+                    initialState: 'collapsed',// 所有节点都折叠
+                    // initialState: 'expanded',// 所有节点都展开，默认展开
+                    treeColumn: 1,
+                    // expanderExpandedClass: 'glyphicon glyphicon-minus',  //图标样式
+                    // expanderCollapsedClass: 'glyphicon glyphicon-plus',
+                    onChange: function() {
+                        $table.bootstrapTable('resetWidth');
+                    }
+                });
+
+                //只展开树形的第一级节点
+                $table.treegrid('getRootNodes').treegrid('expand');
+
+            },
+            onCheck:function(row){
+                var datas = $table.bootstrapTable('getData');
+                // 勾选子类
+                selectChilds(datas,row,"id","pid",true);
+
+                // 勾选父类
+                selectParentChecked(datas,row,"id","pid")
+
+                // 刷新数据
+                $table.bootstrapTable('load', datas);
+            },
+
+            onUncheck:function(row){
+                var datas = $table.bootstrapTable('getData');
+                selectChilds(datas,row,"id","pid",false);
+                $table.bootstrapTable('load', datas);
+            },
+            // bootstrap-table-treetreegrid.js 插件配置 -- end
+        });
 
         //控制台输出一下数
-        $.ajax({
-            url:'/permission/findAll',
-            dataType:'json',
-            success:function(res){
-                tableData = res.rows;
-                tableTotal = res.total;
-                $table.bootstrapTable({
-                    // url:'/permission/findAll',
-                    data:tableData,
-                    idField: 'id',
-                    pageNumber : 1, //初始化加载第一页
-                    pagination : true,//是否分页
-                    sidePagination : 'client',//server:服务器端分页|client：前端分页
-                    pageSize : 10,//单页记录数
-                    pageList : [ 5, 10, 20],//可选择单页记录数
-                    columns:[
-                        {
-                            field: 'id',
-                            title: '编号'
-                        },
-                        {
-                            field:'name',
-                            title:'名称'
-                        },
-                        {
-                            field:'permission',
-                            title:'权限'
-                        },{
-                            field:'desc',
-                            title:'描述'
-                        },{
-                            field:'path',
-                            title:'路径'
-                        },
-                        {
-                            field:'type',
-                            title:'类型',
-                            formatter:function (value, item, index) {
-                                var res="";
-                                if(value==1){
-                                    res="<button class='btn btn-xs btn-success'>菜单</button>";
-                                }else if(value==2){
-                                    res="<button class='btn btn-xs btn-primary'>权限</button>";
-                                }
-                                return res;
-                            }
-                        },
-                        {
-                            field:'id',
-                            title:'操      作',
-                            formatter:function (value, item, index) {
-                                var str="";
-                                if(hasUpdatePermission){
-                                    str+=" <a class='btn btn-xs btn-success' href='/permission/goUpdate/"+value+"'>编辑</a> ";
-                                }
-                                if(hasDeletePermission){
-                                    str+=" <a  class='btn btn-xs btn-danger' href='/permission/delete/"+value+"'>删除</a>";
-                                }
-                                return str;
-                            }
-                        },
-                    ],
-                    responseHandler:function(res){
-                        var result ={
-                            total:tableTotal
-                        }
-                        return result;
-                    },
-                    // bootstrap-table-treegrid.js 插件配置 -- start
-
-                    //在哪一列展开树形
-                    treeShowField: 'name',
-                    //指定父id列
-                    parentIdField: 'parentId',
-
-                    onResetView: function(data) {
-                        //console.log('load');
-                        $table.treegrid({
-                            initialState: 'collapsed',// 所有节点都折叠
-                            // initialState: 'expanded',// 所有节点都展开，默认展开
-                            treeColumn: 1,
-                            // expanderExpandedClass: 'glyphicon glyphicon-minus',  //图标样式
-                            // expanderCollapsedClass: 'glyphicon glyphicon-plus',
-                            onChange: function() {
-                                $table.bootstrapTable('resetWidth');
-                            }
-                        });
-
-                        //只展开树形的第一级节点
-                        $table.treegrid('getRootNodes').treegrid('expand');
-
-                    },
-                    onCheck:function(row){
-                        var datas = $table.bootstrapTable('getData');
-                        // 勾选子类
-                        selectChilds(datas,row,"id","pid",true);
-
-                        // 勾选父类
-                        selectParentChecked(datas,row,"id","pid")
-
-                        // 刷新数据
-                        $table.bootstrapTable('load', datas);
-                    },
-
-                    onUncheck:function(row){
-                        var datas = $table.bootstrapTable('getData');
-                        selectChilds(datas,row,"id","pid",false);
-                        $table.bootstrapTable('load', datas);
-                    },
-                    // bootstrap-table-treetreegrid.js 插件配置 -- end
-                });
-            }
-        })
+        // $.ajax({
+        //     url:'/permission/findAll',
+        //     dataType:'json',
+        //     success:function(res){
+        //         tableData = res.rows;  // 临时变量
+        //         tableTotal = res.total;// 临时变量
+        //
+        //     }
+        // })
 
     });
 

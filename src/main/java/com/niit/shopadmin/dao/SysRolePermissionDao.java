@@ -1,7 +1,7 @@
 package com.niit.shopadmin.dao;
 
 import com.niit.shopadmin.model.SysPermission;
-import com.niit.shopadmin.model.SysUser;
+import com.niit.shopadmin.model.SysRolePermission;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,7 +12,8 @@ import java.util.List;
  * @author: hanliang
  * @create: 2020-02-19 10:31
  **/
-public interface SysPermissionDao extends JpaRepository<SysPermission,Integer> {
+public interface SysRolePermissionDao extends JpaRepository<SysRolePermission,Integer> {
 
-    List<SysPermission> findSysPermissionByParentId(Integer parentId);
+
+    List<SysRolePermission> deleteByRoleIdAndPermissionId(Integer roleId,Integer permissionId);
 }

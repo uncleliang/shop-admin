@@ -17,4 +17,8 @@ public interface ISysPermissionService {
     Page<SysPermission> findAll(Pageable pageable);
 
     List<SysPermission> findAll();
+
+    List<SysPermission> findSysPermissionByParentId(Integer parentId);
+
+    SysPermission save(SysPermission entity);
 }

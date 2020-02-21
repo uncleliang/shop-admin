@@ -32,4 +32,14 @@ public class SysPermissionService implements ISysPermissionService {
     public List<SysPermission> findAll() {
         return dao.findAll();
     }
+
+    @Override
+    public List<SysPermission> findSysPermissionByParentId(Integer parentId) {
+        return dao.findSysPermissionByParentId(parentId);
+    }
+
+    @Override
+    public SysPermission save(SysPermission entity) {
+        return dao.save(entity);
+    }
 }

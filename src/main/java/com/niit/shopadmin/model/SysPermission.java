@@ -21,6 +21,7 @@ public class SysPermission {
     private Integer parentId;
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     public Integer getId() {
         return id;
@@ -31,7 +32,7 @@ public class SysPermission {
     }
 
     @Basic
-    @Column(name = "name")
+    @Column(name = "[name]")
     public String getName() {
         return name;
     }
@@ -51,7 +52,7 @@ public class SysPermission {
     }
 
     @Basic
-    @Column(name = "desc")
+    @Column(name = "[desc]")
     public String getDesc() {
         return desc;
     }
