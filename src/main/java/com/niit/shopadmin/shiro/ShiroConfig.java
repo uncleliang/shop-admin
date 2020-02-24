@@ -1,4 +1,4 @@
-package com.niit.shopadmin.config;
+package com.niit.shopadmin.shiro;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.niit.shopadmin.shiro.ShopRealm;

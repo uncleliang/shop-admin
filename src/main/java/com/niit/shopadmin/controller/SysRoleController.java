@@ -1,6 +1,8 @@
 package com.niit.shopadmin.controller;
 
 import com.niit.shopadmin.model.*;
+import com.niit.shopadmin.redis.RedisService;
+import com.niit.shopadmin.redis.key.SysPermissionKey;
 import com.niit.shopadmin.service.ISysPermissionService;
 import com.niit.shopadmin.service.ISysRolePermissionService;
 import com.niit.shopadmin.service.ISysRoleService;
@@ -37,6 +39,9 @@ public class SysRoleController {
     @Autowired
     ISysRolePermissionService rolePermissionService;
 
+    @Autowired
+    RedisService redisService;
+
     @RequestMapping("/goAdd")
     public String goAdd(){
         return "role/add";
@@ -48,9 +53,10 @@ public class SysRoleController {
     public List<TreeNode> getTreeNodes(){
         List<TreeNode> data = new ArrayList<>();
 
-        List<SysPermission> permissions= permissionService.findAll();
+        List  permissions= permissionService.findAll();
 
-        for(SysPermission p : permissions){
+        for(Object o : permissions){
+            SysPermission p = (SysPermission)o;
             TreeNode node = new TreeNode();
 
             node.setId(p.getId());
@@ -138,6 +144,11 @@ public class SysRoleController {
     }
 
 
+    /**
+     * 根据角色ID获取角色权限列表树形结构
+     * @param roleId
+     * @return
+     */
     @RequestMapping("/getTreeNodesForUpdate")
     @ResponseBody
     public List<TreeNode> getTreeNodesForUpdate(@RequestParam("id") Integer roleId){
@@ -168,6 +179,11 @@ public class SysRoleController {
     }
 
 
+    /**
+     * 更新角色信息以及权限列表
+     * @param param
+     * @return
+     */
     @RequestMapping("/update")
     @ResponseBody
     public ResultBean update(@RequestBody()PermissionParam param){

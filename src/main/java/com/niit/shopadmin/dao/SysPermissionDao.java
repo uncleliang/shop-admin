@@ -15,4 +15,6 @@ import java.util.List;
 public interface SysPermissionDao extends JpaRepository<SysPermission,Integer> {
 
     List<SysPermission> findSysPermissionByParentId(Integer parentId);
+
+    List<SysPermission> findSysPermissionByType(Integer type);
 }

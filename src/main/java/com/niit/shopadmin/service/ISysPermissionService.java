@@ -21,4 +21,6 @@ public interface ISysPermissionService {
     List<SysPermission> findSysPermissionByParentId(Integer parentId);
 
     SysPermission save(SysPermission entity);
+
+    List<SysPermission> findSysPermissionByType(Integer type);
 }

@@ -24,47 +24,15 @@
     </div>
     <div class="collapse navbar-collapse" id="example-navbar-collapse">
         <ul class="nav navbar-nav">
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li shiro:hasPermission="product:view"><a href="/product/list">商品列表</a></li>
-                    <li shiro:hasPermission="product:add"><a href="/product/goAdd">添加商品</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品分类管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">商品分类列表</a></li>
-                    <li><a href="#">添加商品分类</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">商品二级分类管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="#">商品二级分类列表</a></li>
-                    <li><a href="#">添加商品二级分类</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">用户管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/user/list">用户列表</a></li>
-                    <li><a href="/user/goAdd">添加用户</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">角色管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/role/list">角色列表</a></li>
-                    <li><a href="/role/goAdd">添加角色</a></li>
-                </ul>
-            </li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">权限管理 <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                    <li><a href="/permission/list">权限列表</a></li>
-                    <li><a href="/permission/goAdd">添加权限</a></li>
-                </ul>
+            <li class="dropdown" th:each="mm : ${MENUS}" shiro:hasPermission="${mm.permission}">
+                <th:block th:if="${mm.parentId==0}">
+                    <a th:href="${mm.path}" class="dropdown-toggle" data-toggle="dropdown" th:text="${mm.name}"> 商品管理<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li th:each="sm: ${session.MENUS}" th:if="${sm.parentId==mm.id}" shiro:hasPermission="${sm.permission}">
+                            <a th:href="${sm.path}" th:text="${sm.name}"></a>
+                        </li>
+                    </ul>
+                </th:block>
             </li>
         </ul>
     </div>

@@ -18,4 +18,14 @@ public class ConsUtil {
     public static final String E_USER_NOT_EXISTS="用户不存在";
     public static final String E_PASSWORD_ERROR="密码错误";
     public static final String E_NO_PERMISSION="权限不足";
+
+    public static final int  PERM_TYPE_MENUE=1;
+    public static final int  PERM_TYPE_PERMISSION=2;
+
+    public static final long TIME_ONE_HOUR = 60*60;
+    public static final long TIME_TWO_HOUR = 60*60*2;
+    public static final long TIME_HALF_DAY = 60*60*12;
+    public static final long TIME_DAY = 60*60*24;
+    public static final long TIME_WEEK = 60*60*24*7;
+    public static final long TIME_MONTH = 60*60*24*30;
 }

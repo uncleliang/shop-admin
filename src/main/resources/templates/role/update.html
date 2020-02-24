@@ -70,7 +70,6 @@
         };
 
 
-
         var code, log, className = "dark";
         function beforeCheck(treeId, treeNode) {
             className = (className === "dark" ? "":"dark");
@@ -134,6 +133,7 @@
             $("#autoCheckTriggerValue").html(zTree.setting.check.autoCheckTrigger ? "true" : "false");
         }
 
+        // 初始化 tree
         $.ajax({
             url:"/role/getTreeNodesForUpdate",
             data:{id:$("#roleId").val()},
@@ -175,7 +175,7 @@
                      permissions:changedNodes}
                     ),
                 success:function (res) {
-                    alert(res);
+                   location.href="/role/list";
                 }
             })
 

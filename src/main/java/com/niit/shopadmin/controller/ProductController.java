@@ -2,9 +2,13 @@ package com.niit.shopadmin.controller;
 
 import com.niit.shopadmin.model.Product;
 import com.niit.shopadmin.model.ResultBean;
+import com.niit.shopadmin.redis.RedisService;
+import com.niit.shopadmin.redis.key.ProductKey;
+import com.niit.shopadmin.redis.key.SysPermissionKey;
 import com.niit.shopadmin.service.ICategorySecondService;
 import com.niit.shopadmin.service.ICategoryService;
 import com.niit.shopadmin.service.IProductService;
+import com.niit.shopadmin.service.ISysPermissionService;
 import com.niit.shopadmin.service.impl.ImageService;
 import com.niit.shopadmin.util.ConsUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -16,14 +20,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.context.WebContext;
+import org.thymeleaf.spring5.context.webflux.SpringWebFluxContext;
+import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @program: shop-admin
@@ -47,14 +54,46 @@ public class ProductController {
     @Autowired
     ImageService imageService;
 
+    @Autowired
+    RedisService redisService;
+
+    @Autowired
+    ThymeleafViewResolver thymeleafViewResolver;
+
     /**
      *  打开商品列表界面
      * @return
      */
-    @RequestMapping("/list")
+    @RequestMapping("/list2")
     @RequiresPermissions("product:view")
-    public String list(){
+    public String list2(){
+
         return "product/list";
+    }
+
+
+    /**
+     *  打开商品列表界面
+     * @return
+     */
+    @RequestMapping(value = "/list",produces="text/html")
+    @RequiresPermissions("product:view")
+    @ResponseBody
+    public String list(HttpServletRequest request, HttpServletResponse response,ModelMap map){
+        // TODO 页面缓存
+        String html;
+        html = (String)redisService.get(ProductKey.getListHTML.getKeyPrefix());
+
+        if(html!=null&&!html.equals("")){
+            return html;
+        }
+
+        // 手动解析界面
+        WebContext context = new WebContext(request,response,request.getServletContext(),request.getLocale(),map);
+
+        html = thymeleafViewResolver.getTemplateEngine().process("product/list",context);
+        redisService.set(ProductKey.getListHTML.getKeyPrefix(),html,60*2);
+        return html;
     }
 
     /**

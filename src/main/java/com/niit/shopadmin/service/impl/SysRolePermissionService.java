@@ -32,9 +32,11 @@ public class SysRolePermissionService implements ISysRolePermissionService {
     @Transactional
     public void deleteInBatch(List<SysRolePermission> permissions) {
         permissions.forEach(
-           e->     {
-                        dao.deleteByRoleIdAndPermissionId(e.getRoleId(),e.getPermissionId());
-                }
+           e -> dao.deleteByRoleIdAndPermissionId(e.getRoleId(),e.getPermissionId())
         );
+
+        for(SysRolePermission e : permissions){
+            dao.deleteByRoleIdAndPermissionId(e.getRoleId(),e.getPermissionId());
+        }
     }
 }
