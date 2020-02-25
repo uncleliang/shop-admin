@@ -3,10 +3,14 @@ package com.niit.shopadmin.redis;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.niit.shopadmin.redis.pubandsub.SubscribeDemo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -18,6 +22,24 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  **/
 @Configuration
 public class RedisConfig {
+
+    @Bean
+    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+                                            MessageListenerAdapter listenerAdapter) {
+
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        // 可以添加多个 messageListener，配置不同的交换机
+        container.addMessageListener(listenerAdapter, new PatternTopic("Channel:1"));
+        return container;
+    }
+
+    @Bean
+    MessageListenerAdapter listenerAdapter(SubscribeDemo receiver) {
+        System.out.println("消息适配器1");
+        return new MessageListenerAdapter(receiver, "onMessage");
+    }
+
     @Bean
     @SuppressWarnings("all")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {

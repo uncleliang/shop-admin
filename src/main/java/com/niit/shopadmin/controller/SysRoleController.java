@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @program: shop-admin
@@ -142,7 +145,28 @@ public class SysRoleController {
 
         return "role/update";
     }
+    /**
+     * 根据角色ID获取角色权限列表树形结构
+     * @return
+     */
+    @RequestMapping("/testRedis")
+    @ResponseBody
+    public List<SysPermission> test(){
 
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                permissionService.findAll();
+            }
+        };
+
+        ExecutorService executorService = Executors.newFixedThreadPool(20);
+        for(int i=0;i<=10000;i++){
+            executorService.submit(r);
+        }
+
+        return permissionService.findAll();
+    }
 
     /**
      * 根据角色ID获取角色权限列表树形结构

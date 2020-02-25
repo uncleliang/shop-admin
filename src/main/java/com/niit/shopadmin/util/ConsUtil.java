@@ -22,6 +22,8 @@ public class ConsUtil {
     public static final int  PERM_TYPE_MENUE=1;
     public static final int  PERM_TYPE_PERMISSION=2;
 
+    public static final long TIME_ONE_MINUTES = 60*5;
+
     public static final long TIME_ONE_HOUR = 60*60;
     public static final long TIME_TWO_HOUR = 60*60*2;
     public static final long TIME_HALF_DAY = 60*60*12;
